@@ -36,6 +36,8 @@ fi
 if [ "$POCKETBUNGEE_FILE" == "" ]; then
 	if [ -f ./src/pocketbungee/PocketBungee.php ]; then
 		POCKETBUNGEE_FILE="./src/pocketbungee/PocketBungee.php"
+	elif [ -f ./src/PocketBungee/PocketBungee.php ]; then
+		POCKETBUNGEE_FILE="./src/PocketBungee/PocketBungee.php"
 	else
 		echo "Couldn't find a valid PocketBungee installation"
 		exit 1
