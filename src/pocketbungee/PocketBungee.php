@@ -17,7 +17,13 @@ namespace pocketbungee {
 
 	basicCheck();
 	TextFormat::init();
-	$bb = new Bungee(\pocketbungee\PATH);
+
+	$autoloader = new \BaseClassLoader();
+	$autoloader->addPath(\pocketbungee\PATH . "src");
+	$autoloader->addPath(\pocketbungee\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
+	$autoloader->register(true);
+
+	$bb = new Bungee(\pocketbungee\PATH, $autoloader);
 	$console = new Console($bb);
 	$console->showConsole();
 
@@ -49,6 +55,5 @@ namespace pocketbungee {
 		$autoloader->addPath(\pocketbungee\PATH . "src");
 		$autoloader->addPath(\pocketbungee\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
 		$autoloader->register(true);
-
 	}
 }

@@ -3,5 +3,6 @@
   "help",
   "servers",
   "reload",
+  "ping",
   "exit"
 ]

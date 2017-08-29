@@ -64,12 +64,10 @@ class Commands {
 				break;
 
 			case "servers":
-				$file = file_get_contents(\pocketbungee\PATH . "config.json");
-				$deject = json_decode($file, JSON_PRETTY_PRINT);
 
 				$list = "";
 				$d = 0;
-				foreach($deject['Servers'] as $name => $data){
+				foreach($this->bungee->getSettings()['Servers'] as $name => $data){
 					$list .= $name . ",";
 				}
 				$list = substr($list, 0, -1);
@@ -77,7 +75,12 @@ class Commands {
 				break;
 
 			case "reload":
+				$this->bungee->reload();
 				$this->bungee->getLogger()->info("All configurations has been reloaded!");
+				break;
+
+			case "ping":
+				$this->bungee->getLogger()->info("PONG!");
 				break;
 		}
 	}
@@ -111,7 +114,7 @@ class Commands {
 		if(isset($this->commands[$command])){
 			unset($this->commands[$command]);
 		} else {
-			$this->bungee->getLogger()->critical("Error while trying to unregister a command that does not exist \ . Command: ".$command);
+			$this->bungee->getLogger()->critical("Error while trying to unregistered a command that does not exist \ . Command: ".$command);
 		}
 	}
 }

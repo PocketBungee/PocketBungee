@@ -30,7 +30,7 @@ class Console {
 
 		$this->load = microtime(true);
 
-		if(!file_exists(\pocketbungee\PATH . "config.json")){
+		if(!file_exists($this->bungee->getDataFolder()."config.json")){
 
 			$this->bungee->getLogger()->info("Setting up ".TextFormat::AQUA."PocketBungee ".TextFormat::YELLOW." for the first time..");
 			$this->firstUse();
@@ -40,26 +40,6 @@ class Console {
 	}
 
 	public function firstUse(){
-
-		$file = [
-			"MOTD" => "A PocketBungee Server",
-			"Max-Players" => "-1",
-			"FallBackServer" => "Lobby-1",
-			"ForceDefault" => true,
-			"Host" => "0.0.0.0",
-			"Servers" => [
-				"Lobby-1" => [
-					"IP" => "localhost",
-					"PORT" => "19133",
-					"isDefault" => true,
-				],
-				"KITPVP" => [
-					"IP" => "localhost",
-					"PORT" => "19134",
-					"isDefault" => false,
-				]
-			],
-		];
 
 		file_put_contents(\pocketbungee\PATH . "config.json", json_encode(json_decode($this->bungee->getResource("config.json"), true), JSON_PRETTY_PRINT));
 		$this->bungee->getLogger()->info("All done!");
