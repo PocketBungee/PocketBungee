@@ -7,3 +7,5 @@ PocketBungee is maintained by [xZeroMCPE](https://twitter.com/PocketBungee).
 This project is something I thought of doing;, I also welcome contributions through PR's. Make sure it's well tested! PocketBungee was built from scratch. Other then the TextFormat :P which is from PMMP
 
 I hope you find this useful
+
+Here's a [video](https://twitter.com/xZeroMCPE/status/902321001991720963). on how it looks so far: 
