@@ -15,6 +15,7 @@ class Console {
 
 	public $bungee;
 	public $pre;
+	public $load;
 
 	/**
 	 * Console constructor.
@@ -26,6 +27,8 @@ class Console {
 	}
 
 	public function showConsole(){
+
+		$this->load = microtime(true);
 
 		if(!file_exists(\pocketbungee\PATH . "config.json")){
 
@@ -72,9 +75,11 @@ class Console {
 		$version = [];
 		$version['VERSION'] = Version::VERSION;;
 		$version['CODENAME'] = Version::CODENAME;
+		$load = (microtime(true) - $this->load);
 
 		$this->bungee->getLogger()->clean("
 §6┌─────────────────────────────────────────────────────────────────────────┐
+§6│		                                                                  
 §6│		                                                                  
 §6│§e   _____           _        _   ____                                     Listening on: §b{$deject['Host']}
 §6│§e  |  __ \         | |      | | |  _ \                                    Registered Server(s): §b{$servers}
@@ -83,7 +88,8 @@ class Console {
 §6│§e  | |  | (_) | (__|   <  __/ |_| |_) | |_| | | | | (_| |  __/  __/       Code Name: §b{$version['CODENAME']}
 §6│§e  |_|   \___/ \___|_|\_\___|\__|____/ \__,_|_| |_|\__, |\___|\___|       Date: §b{$date}
 §6│§e		                                      __/ |  │            GitHub: §bhttps://github.com/PocketBungee/PocketBungee
-§6│§e		                                      |_____/
+§6│§e		                                      |_____/             Loaded in: §b{$load} 's seconds!
+§6│§e
 §6└─────────────────────────────────────────────────────────────────────────┘");
 
 

@@ -3,3 +3,4 @@
 *.iml
 sh.exe.stackdump
 bin/
+config.json
