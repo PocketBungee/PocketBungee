@@ -32,7 +32,7 @@ class Commands {
 	}
 
 	public function int(){
-		$deject = json_decode($this->bungee->getResource("commands.json"));
+		$deject = json_decode($this->bungee->getResource("commands.json"), true);
 
 		foreach($deject as $name){
 			$this->commands[$name] = $name;
