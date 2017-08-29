@@ -7,11 +7,19 @@ use pocketbungee\Bungee;
 use pocketbungee\commands\Commands;
 use pocketbungee\network\Version;
 
+/**
+ * Class Console
+ * @package pocketbungee\tools
+ */
 class Console {
 
 	public $bungee;
 	public $pre;
 
+	/**
+	 * Console constructor.
+	 * @param Bungee $bungee
+	 */
 	public function __construct(Bungee $bungee){
 		$this->bungee = $bungee;
 		$this->showConsole();

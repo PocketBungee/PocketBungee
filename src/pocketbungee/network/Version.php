@@ -9,6 +9,10 @@
 namespace pocketbungee\network;
 
 
+/**
+ * Class Version
+ * @package pocketbungee\network
+ */
 class Version {
 
 	const VERSION = "1.0";

@@ -3,6 +3,10 @@
 namespace pocketbungee\tools;
 
 
+/**
+ * Class TextFormat
+ * @package pocketbungee\tools
+ */
 class TextFormat {
 
 	const ESCAPE = "\xc2\xa7";
@@ -66,10 +70,17 @@ class TextFormat {
 	public static $COLOR_WHITE = "";
 	private static $formattingCodes = null;
 
+	/**
+	 * @param string $string
+	 * @return array
+	 */
 	public static function tokenize(string $string) : array{
 		return preg_split("/(" . TextFormat::ESCAPE . "[0123456789abcdefklmnor])/", $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 	}
 
+	/**
+	 * @return bool|null
+	 */
 	public static function hasFormattingCodes(){
 		if(self::$formattingCodes === null){
 			$opts = getopt("", ["enable-ansi", "disable-ansi"]);
@@ -82,6 +93,10 @@ class TextFormat {
 		return self::$formattingCodes;
 	}
 
+	/**
+	 * @param $string
+	 * @return string
+	 */
 	public static function toANSI($string) : string{
 		if(!is_array($string)){
 			$string = self::tokenize($string);

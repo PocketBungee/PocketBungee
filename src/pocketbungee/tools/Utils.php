@@ -9,10 +9,18 @@
 namespace pocketbungee\tools;
 
 
+/**
+ * Class Utils
+ * @package pocketbungee\tools
+ */
 class Utils {
 
 	public static $os;
 
+	/**
+	 * @param bool $recalculate
+	 * @return string
+	 */
 	public static function getOS(bool $recalculate = false) : string{
 		if(self::$os === null or $recalculate){
 			$uname = php_uname("s");

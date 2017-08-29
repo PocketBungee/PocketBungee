@@ -13,14 +13,35 @@ use pocketbungee\Bungee;
 use pocketbungee\tools\Logger;
 use pocketbungee\tools\TextFormat;
 
+/**
+ * Class Commands
+ * @package pocketbungee\commands
+ */
 class Commands {
 
 	public $bungee;
+	public $commands = [];
 
+	/**
+	 * Commands constructor.
+	 * @param Bungee $bungee
+	 */
 	public function __construct(Bungee $bungee){
 		$this->bungee = $bungee;;
+		$this->int();
 	}
 
+	public function int(){
+		$deject = json_decode($this->bungee->getResource("commands.json"));
+
+		foreach($deject as $name){
+			$this->commands[$name] = $name;
+		}
+	}
+
+	/**
+	 * @param $command
+	 */
 	public function handle($command){
 
 		switch($command){
@@ -61,17 +82,36 @@ class Commands {
 		}
 	}
 
+	/**
+	 * @param $command
+	 * @return bool
+	 */
 	public  function commandExist($command){
 
-		if(in_array($command, ['help','?','servers','exit','reload'])){
+		if(in_array($command, $this->commands)){
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getCommands(){
 
-		return ['help','?','servers','exit','reload'];
+		return $this->commands;
+	}
+
+	/**
+	 * @param $command
+	 */
+	public function unRegisterCommand($command){
+
+		if(isset($this->commands[$command])){
+			unset($this->commands[$command]);
+		} else {
+			$this->bungee->getLogger()->critical("Error while trying to unregister a command that does not exist \ . Command: ".$command);
+		}
 	}
 }
