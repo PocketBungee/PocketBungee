@@ -1,0 +1,19 @@
+{
+  "MOTD": "A PocketBungee Proxy",
+  "Max-Players": "-1",
+  "FallBackServer": "Lobby-1",
+  "ForceDefault": true,
+  "Host": "0.0.0.0",
+  "Servers": {
+    "Lobby-1": {
+      "IP": "localhost",
+      "PORT": "19133",
+      "isDefault": true
+    },
+    "KITPVP": {
+      "IP": "localhost",
+      "PORT": "19134",
+      "isDefault": false
+    }
+  }
+}
