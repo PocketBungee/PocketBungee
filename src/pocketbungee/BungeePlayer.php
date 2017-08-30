@@ -9,6 +9,10 @@
 namespace pocketbungee;
 
 
+/**
+ * Class BungeePlayer
+ * @package pocketbungee
+ */
 class BungeePlayer {
 
 	const DEFAULT_SERVER = "__DEFAULT__";
@@ -19,6 +23,14 @@ class BungeePlayer {
 	public $port;
 	public $username;
 
+	/**
+	 * BungeePlayer constructor.
+	 * @param Bungee $bungee
+	 * @param string $server
+	 * @param $ip
+	 * @param $port
+	 * @param $username
+	 */
 	public function __construct(Bungee $bungee, $server = "__DEFAULT__", $ip, $port, $username){
 		$this->bungee = $bungee;
 		$this->server = $server;
@@ -27,6 +39,9 @@ class BungeePlayer {
 		$this->username = $username;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() : string{
 		return $this->username;
 	}
@@ -39,6 +54,9 @@ class BungeePlayer {
 		return $this->port;
 	}
 
+	/**
+	 * @return bool|int|string
+	 */
 	public function getServer(){
 		if($this->server == self::DEFAULT_SERVER){
 			return $this->bungee->getDefaultServer();
@@ -47,11 +65,18 @@ class BungeePlayer {
 		}
 	}
 
+	/**
+	 * @param $server
+	 * @return bool
+	 */
 	public function transfer($server) : bool{
 		// Use this to send player to another server.
 		return true;
 	}
 
+	/**
+	 * @param $message
+	 */
 	public function sendMessage($message){
 		// Use this to send a player a message, that are connected within PocketBungee
 	}

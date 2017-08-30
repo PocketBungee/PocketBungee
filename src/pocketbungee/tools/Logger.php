@@ -61,7 +61,7 @@ class Logger {
 	public function error($value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
-		echo TextFormat::toANSI($edit);
+		echo PHP_EOL . TextFormat::toANSI($edit);
 		self::default();
 	}
 
@@ -106,7 +106,6 @@ class Logger {
 	}
 
 	public static function default(){
-		echo PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI(TextFormat::RED . "PocketBungee> " . TextFormat::BLUE);
 	}
 

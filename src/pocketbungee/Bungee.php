@@ -37,6 +37,9 @@ class Bungee {
 		$this->int();
 	}
 
+	/**
+	 * @return Bungee
+	 */
 	public static function getInstance() : Bungee{
 		return self::$instance;
 	}
@@ -95,6 +98,9 @@ class Bungee {
 		return $this->settings;
 	}
 
+	/**
+	 * @return bool|int|string
+	 */
 	public function getDefaultServer(){
 
 		foreach($this->getSettings()['Servers'] as $name => $value){
