@@ -24,6 +24,7 @@ class Bungee {
 	public $commandSystem;
 	public $loader;
 	public $host;
+	public $defaultServer;
 	public static $instance;
 
 	/**
@@ -51,6 +52,17 @@ class Bungee {
 		$file = file_get_contents($this->getDataFolder() . "config.json");
 		$this->settings = json_decode($file, true);
 
+		$default = null;
+		foreach($this->getSettings()['Servers'] as $name => $value){
+			if($value['isDefault']){
+				$this->defaultServer = $name;
+				$default = $name;
+				break;
+			}
+		}
+		if($default == null){
+			$this->getLogger()->critical("We didn't detect a Default server. PocketBungee may not work as expected.");
+		}
 		$this->host = $this->getSettings()['Host'];
 
 	}
@@ -101,14 +113,8 @@ class Bungee {
 	/**
 	 * @return bool|int|string
 	 */
-	public function getDefaultServer(){
+	public function getDefaultServer() : string{
 
-		foreach($this->getSettings()['Servers'] as $name => $value){
-			if($value['isDefault']){
-				return $name;
-				break;
-			}
-		}
-		return false;
+		return $this->defaultServer;
 	}
 }
