@@ -30,6 +30,7 @@ class Bungee {
 	/**
 	 * Bungee constructor.
 	 * @param $path
+	 * @param $loader
 	 */
 	public function __construct($path, $loader){
 		$this->path = $path;
