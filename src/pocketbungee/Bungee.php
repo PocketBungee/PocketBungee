@@ -26,12 +26,12 @@ class Bungee {
 	public $host;
 	public $defaultServer;
 	public static $instance;
-
-	/**
-	 * Bungee constructor.
-	 * @param $path
+    
+    /**
+     * Bungee constructor.
+     * @param $path
      * @param $loader
-	 */
+     */
 	public function __construct($path, $loader){
 		$this->path = $path;
 		$this->loader = $loader;
