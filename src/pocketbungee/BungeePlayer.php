@@ -17,10 +17,15 @@ class BungeePlayer {
 
 	const DEFAULT_SERVER = "__DEFAULT__";
 
+	/** Stores Bungee class instance */
 	public $bungee;
+	/** The default server the player is on */
 	public $server;
+	/** The player's IP address*/
 	public $ip;
+	/** Common sense*/
 	public $port;
+	/** Common sense*/
 	public $username;
 
 	/**
@@ -46,10 +51,16 @@ class BungeePlayer {
 		return $this->username;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getAddress(){
 		return $this->ip;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getPort(){
 		return $this->port;
 	}

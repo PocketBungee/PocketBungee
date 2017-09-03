@@ -19,7 +19,9 @@ use pocketbungee\tools\TextFormat;
  */
 class Commands {
 
+	/** Stores Bungee class instance */
 	public $bungee;
+	/** Contains a list of registered commands */
 	public $commands = [];
 
 	/**

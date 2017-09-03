@@ -18,7 +18,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function info($value){
+	public function info(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -28,7 +28,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function emergency($value){
+	public function emergency(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -38,7 +38,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function alert($value){
+	public function alert(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -48,7 +48,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function critical($value){
+	public function critical(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -58,7 +58,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function error($value){
+	public function error(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -68,7 +68,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function warning($value){
+	public function warning(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -78,7 +78,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function notice($value){
+	public function notice(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -88,7 +88,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function debug($value){
+	public function debug(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -98,7 +98,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function log($value){
+	public function log(string $value){
 
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
@@ -113,7 +113,7 @@ class Logger {
 	/**
 	 * @param $value
 	 */
-	public function clean($value){
+	public function clean(string $value){
 
 		echo PHP_EOL . TextFormat::toANSI($value) . PHP_EOL;
 		self::default();

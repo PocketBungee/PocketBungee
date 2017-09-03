@@ -18,13 +18,21 @@ use pocketbungee\tools\Logger;
  */
 class Bungee {
 
+	/**  Stores the Logger class instance */
 	public $logger;
+	/** Stores the path to PocketBungee */
 	private $path;
+	/** Stores the proxy settings */
 	public $settings;
+	/** Stores the CommandSystem class instnace */
 	public $commandSystem;
+	/** Same $path */
 	public $loader;
+	/**  The host ip from config.json */
 	public $host;
+	/** The default proxy server */
 	public $defaultServer;
+	/** Bungee self instance */
 	public static $instance;
 
 	/**
@@ -82,6 +90,9 @@ class Bungee {
 		return $this->commandSystem;
 	}
 
+	/**
+	 * @return Stores
+	 */
 	public function getDataFolder(){
 		return $this->path;
 	}
@@ -94,10 +105,16 @@ class Bungee {
 		return file_get_contents(\pocketbungee\DATA . "src" . DIRECTORY_SEPARATOR . "pocketbungee" . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . $name);
 	}
 
+	/**
+	 * @return Stores
+	 */
 	public function getLoader(){
 		return $this->logger;
 	}
 
+	/**
+	 * @return The
+	 */
 	public function getHost(){
 		return $this->host;
 	}
@@ -107,6 +124,9 @@ class Bungee {
 		$this->settings = json_decode($file, true);
 	}
 
+	/**
+	 * @return Stores
+	 */
 	public function getSettings(){
 		return $this->settings;
 	}
