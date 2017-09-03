@@ -9,7 +9,7 @@ if exist bin\php\php.exe (
 	set PHP_BINARY=php
 )
 
-if exist PocketMine-MP.phar (
+if exist PocketBungee.phar (
 	set POCKETBUNGEE_FILE=PocketBungee.phar
 ) else (
 	if exist src\pocketbungee\PocketBungee.php (
