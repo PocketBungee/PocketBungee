@@ -91,7 +91,7 @@ class Bungee {
 	}
 
 	/**
-	 * @return Stores
+	 * @return @Path
 	 */
 	public function getDataFolder(){
 		return $this->path;
@@ -105,15 +105,9 @@ class Bungee {
 		return file_get_contents(\pocketbungee\DATA . "src" . DIRECTORY_SEPARATOR . "pocketbungee" . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . $name);
 	}
 
-	/**
-	 * @return Stores
-	 */
-	public function getLoader(){
-		return $this->logger;
-	}
 
 	/**
-	 * @return The
+	 * @return @Host
 	 */
 	public function getHost(){
 		return $this->host;
@@ -125,7 +119,7 @@ class Bungee {
 	}
 
 	/**
-	 * @return Stores
+	 * @return @Settings
 	 */
 	public function getSettings(){
 		return $this->settings;
