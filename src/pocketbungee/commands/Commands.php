@@ -37,8 +37,8 @@ class Commands {
 
 		switch($command){
 
-			case 'exit':
-				exit;
+			case 'stop':
+				$this->bungee->shutDown();
 				break;
 
 			case "help":

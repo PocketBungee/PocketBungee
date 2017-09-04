@@ -142,4 +142,9 @@ class Bungee {
 	public function getDefaultServer() : string{
 		return $this->defaultServer;
 	}
+
+	public function shutDown($force = false){
+		$this->getLogger()->notice("Shutting down PocketBungee....");
+		exit;
+	}
 }
