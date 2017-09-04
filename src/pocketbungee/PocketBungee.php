@@ -7,7 +7,6 @@ namespace pocketbungee {
 	use pocketbungee\tools\TextFormat;
 
 	basicCheck();
-	TextFormat::init();
 
 	function basicCheck(){
 

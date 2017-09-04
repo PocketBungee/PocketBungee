@@ -7,6 +7,7 @@ namespace pocketbungee;
 use pocketbungee\commands\Commands;
 use pocketbungee\tools\Console;
 use pocketbungee\tools\Logger;
+use pocketbungee\tools\TextFormat;
 
 class Bungee {
 
@@ -43,6 +44,7 @@ class Bungee {
 	}
 
 	public function int(){
+		TextFormat::init();
 		$this->logger = new Logger();
 		$this->commandSystem = new Commands($this);
 		if($this->hasStarted === true){
