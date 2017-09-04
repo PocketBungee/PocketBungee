@@ -23,9 +23,9 @@ class BungeePlayer {
 	 *
 	 * @param Bungee $bungee
 	 * @param string $server
-	 * @param        $ip
-	 * @param        $port
-	 * @param        $username
+	 * @param int    $ip
+	 * @param int    $port
+	 * @param int    $username
 	 */
 	public function __construct(Bungee $bungee, string $server = BungeePlayer::DEFAULT_SERVER, int $ip, int $port, string $username){
 		$this->bungee = $bungee;

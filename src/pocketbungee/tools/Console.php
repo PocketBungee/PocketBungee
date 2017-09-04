@@ -29,16 +29,16 @@ class Console {
 		$this->load = microtime(true);
 
 		if(!file_exists($this->bungee->getDataFolder() . "config.json")){
-
 			$this->bungee->getLogger()->info("Setting up " . TextFormat::AQUA . "PocketBungee " . TextFormat::YELLOW . " for the first time..");
 			$this->firstUse();
 		}else{
 			$this->ready();
 		}
+
+		$this->bungee->hasStarted = true;
 	}
 
 	public function firstUse(){
-
 		file_put_contents(\pocketbungee\PATH . "config.json", json_encode(json_decode($this->bungee->getResource("config.json"), true), JSON_PRETTY_PRINT));
 		$this->bungee->getLogger()->info("All done!");
 		$this->ready();
@@ -48,7 +48,7 @@ class Console {
 
 		$date = date("D, F d, Y, H:i T");
 		$file = file_get_contents(\pocketbungee\PATH . "config.json");
-		$deject = json_decode($file, JSON_PRETTY_PRINT);
+		$deject = json_decode($file, true);
 		$servers = count($deject['Servers']);
 		$version = [];
 		$version['VERSION'] = Version::VERSION;;

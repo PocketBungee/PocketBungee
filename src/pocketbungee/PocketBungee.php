@@ -3,21 +3,11 @@ declare(strict_types=1);
 
 namespace pocketbungee {
 
-
 	use pocketbungee\tools\Console;
 	use pocketbungee\tools\TextFormat;
 
 	basicCheck();
 	TextFormat::init();
-
-	$autoloader = new \BaseClassLoader();
-	$autoloader->addPath(\pocketbungee\PATH . "src");
-	$autoloader->addPath(\pocketbungee\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
-	$autoloader->register(true);
-
-	$bb = new Bungee(\pocketbungee\PATH, $autoloader);
-	$console = new Console($bb);
-	$console->showConsole();
 
 	function basicCheck(){
 
@@ -48,5 +38,8 @@ namespace pocketbungee {
 		$autoloader->addPath(\pocketbungee\PATH . "src");
 		$autoloader->addPath(\pocketbungee\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
 		$autoloader->register(true);
+
+		$bb = new Bungee(\pocketbungee\PATH, $autoloader);
+		new Console($bb);
 	}
 }

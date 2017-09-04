@@ -5,10 +5,13 @@ namespace pocketbungee;
 
 
 use pocketbungee\commands\Commands;
+use pocketbungee\tools\Console;
 use pocketbungee\tools\Logger;
 
 class Bungee {
 
+	//TODO: Actually fix this.
+	public $hasStarted = false;
 	/** @var Bungee */
 	private static $instance;
 	/** @var Logger */
@@ -41,24 +44,25 @@ class Bungee {
 
 	public function int(){
 		$this->logger = new Logger();
-		$this->commandSystem = new Commands($this);
+		if($this->hasStarted === true){
+			$this->commandSystem = new Commands($this);
 
-		$file = file_get_contents($this->getDataFolder() . "config.json");
-		$this->settings = json_decode($file, true);
+			$file = file_get_contents($this->getDataFolder() . "config.json");
+			$this->settings = json_decode($file, true);
 
-		$default = null;
-		foreach($this->getSettings()['Servers'] as $name => $value){
-			if($value['isDefault']){
-				$this->defaultServer = $name;
-				$default = $name;
-				break;
+			$default = null;
+			foreach($this->getSettings()['Servers'] as $name => $value){
+				if($value['isDefault']){
+					$this->defaultServer = $name;
+					$default = $name;
+					break;
+				}
 			}
+			if($default == null){
+				$this->getLogger()->critical("We didn't detect a Default server. PocketBungee may not work as expected.");
+			}
+			$this->host = $this->getSettings()['Host'];
 		}
-		if($default == null){
-			$this->getLogger()->critical("We didn't detect a Default server. PocketBungee may not work as expected.");
-		}
-		$this->host = $this->getSettings()['Host'];
-
 	}
 
 	/**
@@ -117,8 +121,10 @@ class Bungee {
 
 	/**
 	 * The host ip from config.json
+	 *
+	 * @return string
 	 */
-	public function getHost(){
+	public function getHost() : string{
 		return $this->host;
 	}
 
