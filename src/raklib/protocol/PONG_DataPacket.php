@@ -23,7 +23,7 @@ namespace raklib\protocol;
 
 #include <rules/RakLibPacket.h>
 
-class PONG_DataPacket extends Packet{
+class PONG_DataPacket extends Packet {
 	public static $ID = 0x03;
 
 	public $pingID;

@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/28/2017
- * Time: 5:53 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee;
 
@@ -12,46 +7,36 @@ namespace pocketbungee;
 use pocketbungee\commands\Commands;
 use pocketbungee\tools\Logger;
 
-/**
- * Class Bungee
- * @package pocketbungee
- */
 class Bungee {
 
-	/**  Stores the Logger class instance */
-	public $logger;
-	/** Stores the path to PocketBungee */
-	private $path;
-	/** Stores the proxy settings */
-	public $settings;
-	/** Stores the CommandSystem class instnace */
-	public $commandSystem;
-	/** Same $path */
-	public $loader;
-	/**  The host ip from config.json */
-	public $host;
-	/** The default proxy server */
-	public $defaultServer;
-	/** Bungee self instance */
-	public static $instance;
+	/** @var Bungee */
+	private static $instance;
+	/** @var Logger */
+	private $logger;
+	/** @var string */
+	private $dataFolder;
+	/** @var array */
+	private $settings;
+	/** @var Commands */
+	private $commandSystem;
+	/** @var string */
+	private $loader;
+	/** @var string */
+	private $host;
+	/** @var string */
+	private $defaultServer;
 
 	/**
 	 * Bungee constructor.
-	 * @param $path
-	 * @param $loader
+	 *
+	 * @param string $dataFolder
+	 * @param        $loader
 	 */
-	public function __construct($path, $loader){
-		$this->path = $path;
+	public function __construct(string $dataFolder, $loader){
+		$this->dataFolder = $dataFolder;
 		$this->loader = $loader;
 		self::$instance = $this;
 		$this->int();
-	}
-
-	/**
-	 * @return Bungee
-	 */
-	public static function getInstance() : Bungee{
-		return self::$instance;
 	}
 
 	public function int(){
@@ -77,6 +62,26 @@ class Bungee {
 	}
 
 	/**
+	 * Stores the path to PocketBungee
+	 *
+	 * @return string
+	 */
+	public function getDataFolder() : string{
+		return $this->dataFolder;
+	}
+
+	/**
+	 * Stores the proxy settings
+	 *
+	 * @return array
+	 */
+	public function getSettings() : array{
+		return $this->settings;
+	}
+
+	/**
+	 * Stores the Logger class instance
+	 *
 	 * @return Logger
 	 */
 	public function getLogger() : Logger{
@@ -84,6 +89,17 @@ class Bungee {
 	}
 
 	/**
+	 * Bungee self instance
+	 *
+	 * @return Bungee
+	 */
+	public static function getInstance() : Bungee{
+		return self::$instance;
+	}
+
+	/**
+	 * Stores the CommandSystem class instnace
+	 *
 	 * @return Commands
 	 */
 	public function getCommandSystem() : Commands{
@@ -91,23 +107,16 @@ class Bungee {
 	}
 
 	/**
-	 * @return @Path
-	 */
-	public function getDataFolder(){
-		return $this->path;
-	}
-
-	/**
-	 * @param $name
+	 * @param string $name
+	 *
 	 * @return bool|string
 	 */
-	public function getResource($name){
+	public function getResource(string $name){
 		return file_get_contents(\pocketbungee\DATA . "src" . DIRECTORY_SEPARATOR . "pocketbungee" . DIRECTORY_SEPARATOR . "resources" . DIRECTORY_SEPARATOR . $name);
 	}
 
-
 	/**
-	 * @return @Host
+	 * The host ip from config.json
 	 */
 	public function getHost(){
 		return $this->host;
@@ -119,17 +128,11 @@ class Bungee {
 	}
 
 	/**
-	 * @return @Settings
-	 */
-	public function getSettings(){
-		return $this->settings;
-	}
-
-	/**
-	 * @return bool|int|string
+	 * The default proxy server
+	 *
+	 * @return string
 	 */
 	public function getDefaultServer() : string{
-
 		return $this->defaultServer;
 	}
 }

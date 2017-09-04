@@ -6,7 +6,7 @@
  * WARNING: Do not include this file
  *
  */
-class WeakRef{
+class WeakRef {
 
 	/**
 	 * Constructs a new weak reference.
@@ -51,7 +51,7 @@ class WeakRef{
 	}
 }
 
-class WeakMap implements Countable, ArrayAccess, Iterator{
+class WeakMap implements Countable, ArrayAccess, Iterator {
 
 	/**
 	 * Constructs a new map

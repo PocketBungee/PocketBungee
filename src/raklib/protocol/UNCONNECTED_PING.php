@@ -20,7 +20,7 @@ namespace raklib\protocol;
 
 use raklib\RakLib;
 
-class UNCONNECTED_PING extends Packet{
+class UNCONNECTED_PING extends Packet {
 	public static $ID = 0x01;
 
 	public $pingID;

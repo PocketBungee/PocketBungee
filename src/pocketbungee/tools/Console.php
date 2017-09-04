@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
@@ -7,18 +8,15 @@ use pocketbungee\Bungee;
 use pocketbungee\commands\Commands;
 use pocketbungee\network\Version;
 
-/**
- * Class Console
- * @package pocketbungee\tools
- */
 class Console {
 
-	public $bungee;
 	public $pre;
-	public $load;
+	private $bungee;
+	private $load;
 
 	/**
 	 * Console constructor.
+	 *
 	 * @param Bungee $bungee
 	 */
 	public function __construct(Bungee $bungee){
@@ -30,9 +28,9 @@ class Console {
 
 		$this->load = microtime(true);
 
-		if(!file_exists($this->bungee->getDataFolder()."config.json")){
+		if(!file_exists($this->bungee->getDataFolder() . "config.json")){
 
-			$this->bungee->getLogger()->info("Setting up ".TextFormat::AQUA."PocketBungee ".TextFormat::YELLOW." for the first time..");
+			$this->bungee->getLogger()->info("Setting up " . TextFormat::AQUA . "PocketBungee " . TextFormat::YELLOW . " for the first time..");
 			$this->firstUse();
 		}else{
 			$this->ready();

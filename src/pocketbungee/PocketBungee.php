@@ -1,19 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/27/2017
- * Time: 8:08 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee {
 
 
 	use pocketbungee\tools\Console;
-	use pocketbungee\tools\Logger;
 	use pocketbungee\tools\TextFormat;
-	use raklib\RakLib;
-
 
 	basicCheck();
 	TextFormat::init();
@@ -29,12 +21,13 @@ namespace pocketbungee {
 
 	function basicCheck(){
 
-		if(version_compare("7.0", PHP_VERSION) > 0){
-			echo TextFormat::CRITICAL . "pocketbungee only supports PHP version 7.0 and higher";
+		if(version_compare("7.0", PHP_VERSION) > 0 or version_compare("7.1", PHP_VERSION) <= 0){
+			echo TextFormat::CRITICAL . "PocketBungee only supports PHP version 7.0";
 			exit();
 		}
-		if(!extension_loaded("pthreads")){ //todo: revert hack
-			echo TextFormat::CRITICAL . "pocketbungee requires pthreads to be installed";
+
+		if(!extension_loaded("pthreads")){ //TODO: revert hack
+			echo TextFormat::CRITICAL . "PocketBungee requires pthreads to be installed";
 			exit();
 		}
 

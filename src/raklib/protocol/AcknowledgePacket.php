@@ -22,7 +22,7 @@ use raklib\Binary;
 
 #include <rules/RakLibPacket.h>
 
-abstract class AcknowledgePacket extends Packet{
+abstract class AcknowledgePacket extends Packet {
 	/** @var int[] */
 	public $packets = [];
 

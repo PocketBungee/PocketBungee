@@ -19,7 +19,7 @@ use raklib\Binary;
 use raklib\protocol\EncapsulatedPacket;
 use raklib\RakLib;
 
-class ServerHandler{
+class ServerHandler {
 
 	/** @var RakLibServer */
 	protected $server;
@@ -74,11 +74,6 @@ class ServerHandler{
 	public function emergencyShutdown(){
 		$this->server->shutdown();
 		$this->server->pushMainToThreadPacket("\x7f"); //RakLib::PACKET_EMERGENCY_SHUTDOWN
-	}
-
-	protected function invalidSession($identifier){
-		$buffer = chr(RakLib::PACKET_INVALID_SESSION) . chr(strlen($identifier)) . $identifier;
-		$this->server->pushMainToThreadPacket($buffer);
 	}
 
 	/**
@@ -143,5 +138,10 @@ class ServerHandler{
 		}
 
 		return false;
+	}
+
+	protected function invalidSession($identifier){
+		$buffer = chr(RakLib::PACKET_INVALID_SESSION) . chr(strlen($identifier)) . $identifier;
+		$this->server->pushMainToThreadPacket($buffer);
 	}
 }

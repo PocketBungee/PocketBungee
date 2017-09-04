@@ -23,7 +23,7 @@ namespace raklib\protocol;
 
 #include <rules/RakLibPacket.h>
 
-class CLIENT_HANDSHAKE_DataPacket extends Packet{
+class CLIENT_HANDSHAKE_DataPacket extends Packet {
 	public static $ID = 0x13;
 
 	public $address;

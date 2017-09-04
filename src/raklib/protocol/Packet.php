@@ -22,12 +22,31 @@ use raklib\Binary;
 
 #include <rules/RakLibPacket.h>
 
-abstract class Packet{
+abstract class Packet {
 	public static $ID = -1;
-
-	protected $offset = 0;
 	public $buffer;
 	public $sendTime;
+	protected $offset = 0;
+
+	public function encode(){
+		$this->buffer = chr(static::$ID);
+	}
+
+	public function decode(){
+		$this->offset = 1;
+	}
+
+	public function clean(){
+		$this->buffer = null;
+		$this->offset = 0;
+		$this->sendTime = null;
+
+		return $this;
+	}
+
+	protected function getLong(){
+		return Binary::readLong($this->get(8));
+	}
 
 	protected function get($len){
 		if($len < 0){
@@ -41,18 +60,6 @@ abstract class Packet{
 		return $len === 1 ? $this->buffer{$this->offset++} : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
-	protected function getLong(){
-		return Binary::readLong($this->get(8));
-	}
-
-	protected function getInt(){
-		return Binary::readInt($this->get(4));
-	}
-
-	protected function getShort($signed = true){
-		return $signed ? Binary::readSignedShort($this->get(2)) : Binary::readShort($this->get(2));
-	}
-
 	protected function getTriad(){
 		return Binary::readTriad($this->get(3));
 	}
@@ -61,12 +68,12 @@ abstract class Packet{
 		return Binary::readLTriad($this->get(3));
 	}
 
-	protected function getByte(){
-		return ord($this->buffer{$this->offset++});
-	}
-
 	protected function getString(){
 		return $this->get($this->getShort());
+	}
+
+	protected function getShort($signed = true){
+		return $signed ? Binary::readSignedShort($this->get(2)) : Binary::readShort($this->get(2));
 	}
 
 	protected function getAddress(&$addr, &$port, &$version = null){
@@ -86,24 +93,20 @@ abstract class Packet{
 		}
 	}
 
+	protected function getByte(){
+		return ord($this->buffer{$this->offset++});
+	}
+
+	protected function getInt(){
+		return Binary::readInt($this->get(4));
+	}
+
 	protected function feof(){
 		return !isset($this->buffer{$this->offset});
 	}
 
-	protected function put($str){
-		$this->buffer .= $str;
-	}
-
 	protected function putLong($v){
 		$this->buffer .= Binary::writeLong($v);
-	}
-
-	protected function putInt($v){
-		$this->buffer .= Binary::writeInt($v);
-	}
-
-	protected function putShort($v){
-		$this->buffer .= Binary::writeShort($v);
 	}
 
 	protected function putTriad($v){
@@ -114,13 +117,17 @@ abstract class Packet{
 		$this->buffer .= Binary::writeLTriad($v);
 	}
 
-	protected function putByte($v){
-		$this->buffer .= chr($v);
-	}
-
 	protected function putString($v){
 		$this->putShort(strlen($v));
 		$this->put($v);
+	}
+
+	protected function putShort($v){
+		$this->buffer .= Binary::writeShort($v);
+	}
+
+	protected function put($str){
+		$this->buffer .= $str;
 	}
 
 	protected function putAddress($addr, $port, $version = 4){
@@ -141,19 +148,11 @@ abstract class Packet{
 		}
 	}
 
-	public function encode(){
-		$this->buffer = chr(static::$ID);
+	protected function putByte($v){
+		$this->buffer .= chr($v);
 	}
 
-	public function decode(){
-		$this->offset = 1;
-	}
-
-	public function clean(){
-		$this->buffer = null;
-		$this->offset = 0;
-		$this->sendTime = null;
-
-		return $this;
+	protected function putInt($v){
+		$this->buffer .= Binary::writeInt($v);
 	}
 }

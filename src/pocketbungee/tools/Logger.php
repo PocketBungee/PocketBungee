@@ -1,18 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/28/2017
- * Time: 4:54 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
-
-/**
- * Class Logger
- * @package pocketbungee\tools
- */
 class Logger {
 
 	/**
@@ -23,6 +13,10 @@ class Logger {
 		$edit = TextFormat::YELLOW . "[INFO] " . TextFormat::RESET . TextFormat::toANSI($value) . PHP_EOL;
 		echo PHP_EOL . TextFormat::toANSI($edit);
 		self::default();
+	}
+
+	public static function default(){
+		echo PHP_EOL . TextFormat::toANSI(TextFormat::RED . "PocketBungee> " . TextFormat::BLUE);
 	}
 
 	/**
@@ -104,11 +98,6 @@ class Logger {
 		echo PHP_EOL . TextFormat::toANSI($edit);
 		self::default();
 	}
-
-	public static function default(){
-		echo PHP_EOL . TextFormat::toANSI(TextFormat::RED . "PocketBungee> " . TextFormat::BLUE);
-	}
-
 
 	/**
 	 * @param $value

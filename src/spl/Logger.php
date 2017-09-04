@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
 */
 
-interface Logger{
+interface Logger {
 
 	/**
 	 * System is unusable
@@ -89,7 +89,7 @@ interface Logger{
 	 * Logs a Throwable object
 	 *
 	 * @param Throwable $e
-	 * @param $trace
+	 * @param           $trace
 	 */
 	public function logException(\Throwable $e, $trace = null);
 }

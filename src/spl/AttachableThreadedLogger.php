@@ -15,21 +15,10 @@
  * GNU General Public License for more details.
 */
 
-abstract class AttachableThreadedLogger extends \ThreadedLogger{
+abstract class AttachableThreadedLogger extends \ThreadedLogger {
 
 	/** @var \ThreadedLoggerAttachment */
 	protected $attachment = null;
-
-	/**
-	 * @param ThreadedLoggerAttachment $attachment
-	 */
-	public function addAttachment(\ThreadedLoggerAttachment $attachment){
-		if($this->attachment instanceof \ThreadedLoggerAttachment){
-			$this->attachment->addAttachment($attachment);
-		}else{
-			$this->attachment = $attachment;
-		}
-	}
 
 	/**
 	 * @param ThreadedLoggerAttachment $attachment
@@ -42,6 +31,17 @@ abstract class AttachableThreadedLogger extends \ThreadedLogger{
 					$this->addAttachment($attachment);
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param ThreadedLoggerAttachment $attachment
+	 */
+	public function addAttachment(\ThreadedLoggerAttachment $attachment){
+		if($this->attachment instanceof \ThreadedLoggerAttachment){
+			$this->attachment->addAttachment($attachment);
+		}else{
+			$this->attachment = $attachment;
 		}
 	}
 

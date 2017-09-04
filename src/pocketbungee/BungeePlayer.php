@@ -1,42 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/29/2017
- * Time: 3:59 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee;
 
-
-/**
- * Class BungeePlayer
- * @package pocketbungee
- */
 class BungeePlayer {
 
 	const DEFAULT_SERVER = "__DEFAULT__";
 
-	/** Stores Bungee class instance */
+	/** @var Bungee */
 	public $bungee;
-	/** The default server the player is on */
+	/** @var string */
 	public $server;
-	/** The player's IP address*/
+	/** @var int */
 	public $ip;
-	/** Common sense*/
+	/** @var int */
 	public $port;
-	/** Common sense*/
+	/** @var string */
 	public $username;
 
 	/**
 	 * BungeePlayer constructor.
+	 *
 	 * @param Bungee $bungee
 	 * @param string $server
-	 * @param $ip
-	 * @param $port
-	 * @param $username
+	 * @param        $ip
+	 * @param        $port
+	 * @param        $username
 	 */
-	public function __construct(Bungee $bungee, $server = BungeePlayer::DEFAULT_SERVER, $ip, $port, $username){
+	public function __construct(Bungee $bungee, string $server = BungeePlayer::DEFAULT_SERVER, int $ip, int $port, string $username){
 		$this->bungee = $bungee;
 		$this->server = $server;
 		$this->ip = $ip;
@@ -52,23 +43,25 @@ class BungeePlayer {
 	}
 
 	/**
+	 * The player's IP address
+	 *
 	 * @return int
 	 */
-	public function getAddress(){
+	public function getAddress() : int{
 		return $this->ip;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getPort(){
+	public function getPort() : int{
 		return $this->port;
 	}
 
 	/**
-	 * @return bool|int|string
+	 * @return string
 	 */
-	public function getServer(){
+	public function getServer() : string{
 		if($this->server == self::DEFAULT_SERVER){
 			return $this->bungee->getDefaultServer();
 		}else{
@@ -78,6 +71,7 @@ class BungeePlayer {
 
 	/**
 	 * @param $server
+	 *
 	 * @return bool
 	 */
 	public function transfer($server) : bool{

@@ -1,24 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/28/2017
- * Time: 5:23 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
-
-/**
- * Class Utils
- * @package pocketbungee\tools
- */
 class Utils {
 
-	public static $os;
+	private static $os;
 
 	/**
 	 * @param bool $recalculate
+	 *
 	 * @return string
 	 */
 	public static function getOS(bool $recalculate = false) : string{
@@ -44,6 +35,7 @@ class Utils {
 				self::$os = "other";
 			}
 		}
+
 		return self::$os;
 	}
 }

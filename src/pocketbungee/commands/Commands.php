@@ -1,22 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andre
- * Date: 8/28/2017
- * Time: 5:14 PM
- */
+declare(strict_types=1);
 
 namespace pocketbungee\commands;
 
-
 use pocketbungee\Bungee;
-use pocketbungee\tools\Logger;
-use pocketbungee\tools\TextFormat;
 
-/**
- * Class Commands
- * @package pocketbungee\commands
- */
 class Commands {
 
 	/** Stores Bungee class instance */
@@ -26,6 +14,7 @@ class Commands {
 
 	/**
 	 * Commands constructor.
+	 *
 	 * @param Bungee $bungee
 	 */
 	public function __construct(Bungee $bungee){
@@ -55,14 +44,14 @@ class Commands {
 			case "help":
 			case "?":
 
-			$list = "";
-			$d = 0;
-			foreach($this->getCommands() as $name){
-				$list .= $name . ",";
-			}
-			$list = substr($list, 0, -1);
+				$list = "";
+				$d = 0;
+				foreach($this->getCommands() as $name){
+					$list .= $name . ",";
+				}
+				$list = substr($list, 0, -1);
 
-				$this->bungee->getLogger()->info("List of commands: ".$list);
+				$this->bungee->getLogger()->info("List of commands: " . $list);
 				break;
 
 			case "servers":
@@ -73,7 +62,7 @@ class Commands {
 					$list .= $name . ",";
 				}
 				$list = substr($list, 0, -1);
-				$this->bungee->getLogger()->info("List of servers: ".$list);
+				$this->bungee->getLogger()->info("List of servers: " . $list);
 				break;
 
 			case "reload":
@@ -88,19 +77,6 @@ class Commands {
 	}
 
 	/**
-	 * @param $command
-	 * @return bool
-	 */
-	public  function commandExist($command){
-
-		if(in_array($command, $this->commands)){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * @return array
 	 */
 	public function getCommands(){
@@ -110,13 +86,27 @@ class Commands {
 
 	/**
 	 * @param $command
+	 *
+	 * @return bool
+	 */
+	public function commandExist($command){
+
+		if(in_array($command, $this->commands)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * @param $command
 	 */
 	public function unRegisterCommand($command){
 
 		if(isset($this->commands[$command])){
 			unset($this->commands[$command]);
-		} else {
-			$this->bungee->getLogger()->critical("Error while trying to unregistered a command that does not exist \ . Command: ".$command);
+		}else{
+			$this->bungee->getLogger()->critical("Error while trying to unregistered a command that does not exist \ . Command: " . $command);
 		}
 	}
 }

@@ -19,7 +19,7 @@ if(!defined("ENDIANNESS")){
 	define("ENDIANNESS", (pack("d", 1) === "\77\360\0\0\0\0\0\0" ? Binary::BIG_ENDIAN : Binary::LITTLE_ENDIAN));
 }
 
-class Binary{
+class Binary {
 	const BIG_ENDIAN = 0x00;
 	const LITTLE_ENDIAN = 0x01;
 
@@ -80,17 +80,6 @@ class Binary{
 	}
 
 	/**
-	 * Writes a byte boolean
-	 *
-	 * @param $b
-	 *
-	 * @return bool|string
-	 */
-	public static function writeBool($b){
-		return self::writeByte($b === true ? 1 : 0);
-	}
-
-	/**
 	 * Reads an unsigned/signed byte
 	 *
 	 * @param string $c
@@ -113,6 +102,17 @@ class Binary{
 	}
 
 	/**
+	 * Writes a byte boolean
+	 *
+	 * @param $b
+	 *
+	 * @return bool|string
+	 */
+	public static function writeBool($b){
+		return self::writeByte($b === true ? 1 : 0);
+	}
+
+	/**
 	 * Writes an unsigned/signed byte
 	 *
 	 * @param $c
@@ -121,17 +121,6 @@ class Binary{
 	 */
 	public static function writeByte($c){
 		return chr($c);
-	}
-
-	/**
-	 * Reads a 16-bit unsigned big-endian number
-	 *
-	 * @param $str
-	 *
-	 * @return int
-	 */
-	public static function readShort($str){
-		return unpack("n", $str)[1];
 	}
 
 	/**
@@ -147,17 +136,6 @@ class Binary{
 		}else{
 			return unpack("n", $str)[1] << 16 >> 16;
 		}
-	}
-
-	/**
-	 * Writes a 16-bit signed/unsigned big-endian number
-	 *
-	 * @param $value
-	 *
-	 * @return string
-	 */
-	public static function writeShort($value){
-		return pack("n", $value);
 	}
 
 	/**
@@ -249,6 +227,10 @@ class Binary{
 		return ENDIANNESS === self::BIG_ENDIAN ? strrev(pack("d", $value)) : pack("d", $value);
 	}
 
+	public static function readLLong($str){
+		return self::readLong(strrev($str));
+	}
+
 	public static function readLong($x){
 		if(PHP_INT_SIZE === 8){
 			list(, $int1, $int2) = unpack("N*", $x);
@@ -267,6 +249,21 @@ class Binary{
 
 			return $value;
 		}
+	}
+
+	/**
+	 * Reads a 16-bit unsigned big-endian number
+	 *
+	 * @param $str
+	 *
+	 * @return int
+	 */
+	public static function readShort($str){
+		return unpack("n", $str)[1];
+	}
+
+	public static function writeLLong($value){
+		return strrev(self::writeLong($value));
 	}
 
 	public static function writeLong($value){
@@ -288,12 +285,15 @@ class Binary{
 		}
 	}
 
-	public static function readLLong($str){
-		return self::readLong(strrev($str));
-	}
-
-	public static function writeLLong($value){
-		return strrev(self::writeLong($value));
+	/**
+	 * Writes a 16-bit signed/unsigned big-endian number
+	 *
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public static function writeShort($value){
+		return pack("n", $value);
 	}
 
 }
