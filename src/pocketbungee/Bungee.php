@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace pocketbungee;
 
-
 use pocketbungee\commands\Commands;
-use pocketbungee\tools\Console;
 use pocketbungee\tools\Logger;
 use pocketbungee\tools\TextFormat;
 
@@ -23,7 +21,7 @@ class Bungee {
 	private $settings;
 	/** @var Commands */
 	private $commandSystem;
-	/** @var string */
+	/** @var \BaseClassLoader */
 	private $loader;
 	/** @var string */
 	private $host;
@@ -33,10 +31,10 @@ class Bungee {
 	/**
 	 * Bungee constructor.
 	 *
-	 * @param string $dataFolder
-	 * @param        $loader
+	 * @param string           $dataFolder
+	 * @param \BaseClassLoader $loader
 	 */
-	public function __construct(string $dataFolder, $loader){
+	public function __construct(string $dataFolder, \BaseClassLoader $loader){
 		$this->dataFolder = $dataFolder;
 		$this->loader = $loader;
 		self::$instance = $this;

@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
-
 use pocketbungee\Bungee;
-use pocketbungee\commands\Commands;
 use pocketbungee\network\Version;
 
 class Console {
@@ -25,11 +23,10 @@ class Console {
 	}
 
 	public function showConsole(){
-
 		$this->load = microtime(true);
 
 		if(!file_exists($this->bungee->getDataFolder() . "config.json")){
-			$this->bungee->getLogger()->info("Setting up " . TextFormat::AQUA . "PocketBungee " . TextFormat::YELLOW . " for the first time..");
+			$this->bungee->getLogger()->info("Setting up " . TextFormat::AQUA . "PocketBungee" . TextFormat::YELLOW . " for the first time..");
 			$this->firstUse();
 		}else{
 			$this->ready();
@@ -45,7 +42,6 @@ class Console {
 	}
 
 	public function ready(){
-
 		$date = date("D, F d, Y, H:i T");
 		$file = file_get_contents(\pocketbungee\PATH . "config.json");
 		$deject = json_decode($file, true);
@@ -66,7 +62,7 @@ class Console {
 §6│§e  | |  | (_) | (__|   <  __/ |_| |_) | |_| | | | | (_| |  __/  __/       Code Name: §b{$version['CODENAME']}
 §6│§e  |_|   \___/ \___|_|\_\___|\__|____/ \__,_|_| |_|\__, |\___|\___|       Date: §b{$date}
 §6│§e		                                      __/ |  │            GitHub: §bhttps://github.com/PocketBungee/PocketBungee
-§6│§e		                                      |_____/             Loaded in: §b{$load} 's seconds!
+§6│§e		                                      |_____/             Loaded in: §b{$load}'s seconds!
 §6│§e
 §6└─────────────────────────────────────────────────────────────────────────┘");
 

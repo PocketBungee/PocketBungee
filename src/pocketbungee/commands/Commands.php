@@ -7,8 +7,8 @@ use pocketbungee\Bungee;
 
 class Commands {
 
-	/** Stores Bungee class instance */
-	public $bungee;
+	/** @var Bungee */
+	private $bungee;
 	/** Contains a list of registered commands */
 	public $commands = [];
 
@@ -33,43 +33,33 @@ class Commands {
 	/**
 	 * @param $command
 	 */
-	public function handle($command){
-
+	public function handle(string $command){
 		switch($command){
-
 			case 'exit':
 				exit;
 				break;
-
 			case "help":
 			case "?":
-
 				$list = "";
-				$d = 0;
 				foreach($this->getCommands() as $name){
-					$list .= $name . ",";
+					$list .= $name . ", ";
 				}
 				$list = substr($list, 0, -1);
 
 				$this->bungee->getLogger()->info("List of commands: " . $list);
 				break;
-
 			case "servers":
-
 				$list = "";
-				$d = 0;
 				foreach($this->bungee->getSettings()['Servers'] as $name => $data){
 					$list .= $name . ",";
 				}
 				$list = substr($list, 0, -1);
 				$this->bungee->getLogger()->info("List of servers: " . $list);
 				break;
-
 			case "reload":
 				$this->bungee->reload();
 				$this->bungee->getLogger()->info("All configurations has been reloaded!");
 				break;
-
 			case "ping":
 				$this->bungee->getLogger()->info("PONG!");
 				break;
@@ -79,18 +69,16 @@ class Commands {
 	/**
 	 * @return array
 	 */
-	public function getCommands(){
-
+	public function getCommands() : array{
 		return $this->commands;
 	}
 
 	/**
-	 * @param $command
+	 * @param string $command
 	 *
 	 * @return bool
 	 */
-	public function commandExist($command){
-
+	public function commandExist(string $command) : bool{
 		if(in_array($command, $this->commands)){
 			return true;
 		}else{
@@ -99,14 +87,17 @@ class Commands {
 	}
 
 	/**
-	 * @param $command
+	 * @param string $command
+	 *
+	 * @return bool
 	 */
-	public function unRegisterCommand($command){
-
+	public function unregisterCommand(string $command) : bool{
 		if(isset($this->commands[$command])){
 			unset($this->commands[$command]);
+			return true;
 		}else{
 			$this->bungee->getLogger()->critical("Error while trying to unregistered a command that does not exist \ . Command: " . $command);
+			return false;
 		}
 	}
 }

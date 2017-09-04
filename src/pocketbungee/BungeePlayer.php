@@ -69,20 +69,11 @@ class BungeePlayer {
 		}
 	}
 
-	/**
-	 * @param $server
-	 *
-	 * @return bool
-	 */
-	public function transfer($server) : bool{
-		// Use this to send player to another server.
-		return true;
+	public function transfer(){
+		//TODO: Implement
 	}
 
-	/**
-	 * @param $message
-	 */
-	public function sendMessage($message){
-		// Use this to send a player a message, that are connected within PocketBungee
+	public function sendMessage(){
+		//TODO: Implement
 	}
 }

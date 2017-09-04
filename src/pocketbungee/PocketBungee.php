@@ -4,19 +4,18 @@ declare(strict_types=1);
 namespace pocketbungee {
 
 	use pocketbungee\tools\Console;
-	use pocketbungee\tools\TextFormat;
 
 	basicCheck();
 
 	function basicCheck(){
 
 		if(version_compare("7.0", PHP_VERSION) > 0 or version_compare("7.1", PHP_VERSION) <= 0){
-			echo TextFormat::CRITICAL . "PocketBungee only supports PHP version 7.0";
+			echo "[CRITICAL] PocketBungee only supports PHP version 7.0";
 			exit();
 		}
 
 		if(!extension_loaded("pthreads")){ //TODO: revert hack
-			echo TextFormat::CRITICAL . "PocketBungee requires pthreads to be installed";
+			echo "[CRITICAL] PocketBungee requires pthreads to be installed";
 			exit();
 		}
 
