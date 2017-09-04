@@ -44,9 +44,8 @@ class Bungee {
 
 	public function int(){
 		$this->logger = new Logger();
+		$this->commandSystem = new Commands($this);
 		if($this->hasStarted === true){
-			$this->commandSystem = new Commands($this);
-
 			$file = file_get_contents($this->getDataFolder() . "config.json");
 			$this->settings = json_decode($file, true);
 
