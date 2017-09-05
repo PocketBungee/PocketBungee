@@ -35,7 +35,7 @@ use raklib\protocol\PONG_DataPacket;
 use raklib\protocol\SERVER_HANDSHAKE_DataPacket;
 use raklib\RakLib;
 
-class Session{
+class Session {
 	const STATE_UNCONNECTED = 0;
 	const STATE_CONNECTING_1 = 1;
 	const STATE_CONNECTING_2 = 2;
@@ -217,232 +217,12 @@ class Session{
 		}
 	}
 
-	/**
-	 * @param EncapsulatedPacket $pk
-	 * @param int                $flags
-	 */
-	private function addToQueue(EncapsulatedPacket $pk, $flags = RakLib::PRIORITY_NORMAL){
-		$priority = $flags & 0b00000111;
-		if($pk->needACK and $pk->messageIndex !== null){
-			$this->needACK[$pk->identifierACK][$pk->messageIndex] = $pk->messageIndex;
-		}
-		if($priority === RakLib::PRIORITY_IMMEDIATE){ //Skip queues
-			$packet = new DATA_PACKET_0();
-			$packet->seqNumber = $this->sendSeqNumber++;
-			if($pk->needACK){
-				$packet->packets[] = clone $pk;
-				$pk->needACK = false;
-			}else{
-				$packet->packets[] = $pk->toBinary();
-			}
-
-			$this->sendPacket($packet);
-			$packet->sendTime = microtime(true);
-			$this->recoveryQueue[$packet->seqNumber] = $packet;
-
-			return;
-		}
-		$length = $this->sendQueue->length();
-		if($length + $pk->getTotalLength() > $this->mtuSize){
-			$this->sendQueue();
-		}
-
-		if($pk->needACK){
-			$this->sendQueue->packets[] = clone $pk;
-			$pk->needACK = false;
-		}else{
-			$this->sendQueue->packets[] = $pk->toBinary();
-		}
-	}
-
-	/**
-	 * @param EncapsulatedPacket $packet
-	 * @param int                $flags
-	 */
-	public function addEncapsulatedToQueue(EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
-
-		if(($packet->needACK = ($flags & RakLib::FLAG_NEED_ACK) > 0) === true){
-			$this->needACK[$packet->identifierACK] = [];
-		}
-
-		if(
-			$packet->reliability === PacketReliability::RELIABLE or
-			$packet->reliability === PacketReliability::RELIABLE_ORDERED or
-			$packet->reliability === PacketReliability::RELIABLE_SEQUENCED or
-			$packet->reliability === PacketReliability::RELIABLE_WITH_ACK_RECEIPT or
-			$packet->reliability === PacketReliability::RELIABLE_ORDERED_WITH_ACK_RECEIPT
-		){
-			$packet->messageIndex = $this->messageIndex++;
-
-			if($packet->reliability === PacketReliability::RELIABLE_ORDERED){
-				$packet->orderIndex = $this->channelIndex[$packet->orderChannel]++;
-			}
-		}
-
-		if($packet->getTotalLength() + 4 > $this->mtuSize){
-			$buffers = str_split($packet->buffer, $this->mtuSize - 34);
-			$splitID = ++$this->splitID % 65536;
-			foreach($buffers as $count => $buffer){
-				$pk = new EncapsulatedPacket();
-				$pk->splitID = $splitID;
-				$pk->hasSplit = true;
-				$pk->splitCount = count($buffers);
-				$pk->reliability = $packet->reliability;
-				$pk->splitIndex = $count;
-				$pk->buffer = $buffer;
-				if($count > 0){
-					$pk->messageIndex = $this->messageIndex++;
-				}else{
-					$pk->messageIndex = $packet->messageIndex;
-				}
-				if($pk->reliability === PacketReliability::RELIABLE_ORDERED){
-					$pk->orderChannel = $packet->orderChannel;
-					$pk->orderIndex = $packet->orderIndex;
-				}
-				$this->addToQueue($pk, $flags | RakLib::PRIORITY_IMMEDIATE);
-			}
-		}else{
-			$this->addToQueue($packet, $flags);
-		}
-	}
-
-	private function handleSplit(EncapsulatedPacket $packet){
-		if($packet->splitCount >= self::MAX_SPLIT_SIZE or $packet->splitIndex >= self::MAX_SPLIT_SIZE or $packet->splitIndex < 0){
-			return;
-		}
-
-
-		if(!isset($this->splitPackets[$packet->splitID])){
-			if(count($this->splitPackets) >= self::MAX_SPLIT_COUNT){
-				return;
-			}
-			$this->splitPackets[$packet->splitID] = [$packet->splitIndex => $packet];
-		}else{
-			$this->splitPackets[$packet->splitID][$packet->splitIndex] = $packet;
-		}
-
-		if(count($this->splitPackets[$packet->splitID]) === $packet->splitCount){
-			$pk = new EncapsulatedPacket();
-			$pk->buffer = "";
-			for($i = 0; $i < $packet->splitCount; ++$i){
-				$pk->buffer .= $this->splitPackets[$packet->splitID][$i]->buffer;
-			}
-
-			$pk->length = strlen($pk->buffer);
-			unset($this->splitPackets[$packet->splitID]);
-
-			$this->handleEncapsulatedPacketRoute($pk);
-		}
-	}
-
-	private function handleEncapsulatedPacket(EncapsulatedPacket $packet){
-		if($packet->messageIndex === null){
-			$this->handleEncapsulatedPacketRoute($packet);
-		}else{
-			if($packet->messageIndex < $this->reliableWindowStart or $packet->messageIndex > $this->reliableWindowEnd){
-				return;
-			}
-
-			if(($packet->messageIndex - $this->lastReliableIndex) === 1){
-				$this->lastReliableIndex++;
-				$this->reliableWindowStart++;
-				$this->reliableWindowEnd++;
-				$this->handleEncapsulatedPacketRoute($packet);
-
-				if(count($this->reliableWindow) > 0){
-					ksort($this->reliableWindow);
-
-					foreach($this->reliableWindow as $index => $pk){
-						if(($index - $this->lastReliableIndex) !== 1){
-							break;
-						}
-						$this->lastReliableIndex++;
-						$this->reliableWindowStart++;
-						$this->reliableWindowEnd++;
-						$this->handleEncapsulatedPacketRoute($pk);
-						unset($this->reliableWindow[$index]);
-					}
-				}
-			}else{
-				$this->reliableWindow[$packet->messageIndex] = $packet;
-			}
-		}
-
-	}
-
 	public function getState(){
 		return $this->state;
 	}
 
 	public function isTemporal(){
 		return $this->isTemporal;
-	}
-
-	private function handleEncapsulatedPacketRoute(EncapsulatedPacket $packet){
-		if($this->sessionManager === null){
-			return;
-		}
-
-		if($packet->hasSplit){
-			if($this->state === self::STATE_CONNECTED){
-				$this->handleSplit($packet);
-			}
-
-			return;
-		}
-
-		$id = ord($packet->buffer{0});
-		if($id < 0x80){ //internal data packet
-			if($this->state === self::STATE_CONNECTING_2){
-				if($id === CLIENT_CONNECT_DataPacket::$ID){
-					$dataPacket = new CLIENT_CONNECT_DataPacket;
-					$dataPacket->buffer = $packet->buffer;
-					$dataPacket->decode();
-					$pk = new SERVER_HANDSHAKE_DataPacket;
-					$pk->address = $this->address;
-					$pk->port = $this->port;
-					$pk->sendPing = $dataPacket->sendPing;
-					$pk->sendPong = bcadd($pk->sendPing, "1000");
-					$pk->encode();
-
-					$sendPacket = new EncapsulatedPacket();
-					$sendPacket->reliability = PacketReliability::UNRELIABLE;
-					$sendPacket->buffer = $pk->buffer;
-					$this->addToQueue($sendPacket, RakLib::PRIORITY_IMMEDIATE);
-				}elseif($id === CLIENT_HANDSHAKE_DataPacket::$ID){
-					$dataPacket = new CLIENT_HANDSHAKE_DataPacket;
-					$dataPacket->buffer = $packet->buffer;
-					$dataPacket->decode();
-
-					if($dataPacket->port === $this->sessionManager->getPort() or !$this->sessionManager->portChecking){
-						$this->state = self::STATE_CONNECTED; //FINALLY!
-						$this->isTemporal = false;
-						$this->sessionManager->openSession($this);
-					}
-				}
-			}elseif($id === CLIENT_DISCONNECT_DataPacket::$ID){
-				$this->disconnect("client disconnect");
-			}elseif($id === PING_DataPacket::$ID){
-				$dataPacket = new PING_DataPacket;
-				$dataPacket->buffer = $packet->buffer;
-				$dataPacket->decode();
-
-				$pk = new PONG_DataPacket;
-				$pk->pingID = $dataPacket->pingID;
-				$pk->encode();
-
-				$sendPacket = new EncapsulatedPacket();
-				$sendPacket->reliability = PacketReliability::UNRELIABLE;
-				$sendPacket->buffer = $pk->buffer;
-				$this->addToQueue($sendPacket);
-			}//TODO: add PING/PONG (0x00/0x03) automatic latency measure
-		}elseif($this->state === self::STATE_CONNECTED){
-			$this->sessionManager->streamEncapsulated($this, $packet);
-
-			//TODO: stream channels
-		}else{
-			//$this->sessionManager->getLogger()->notice("Received packet before connection: " . bin2hex($packet->buffer));
-		}
 	}
 
 	public function handlePacket(Packet $packet){
@@ -530,9 +310,229 @@ class Session{
 		}
 	}
 
+	private function handleEncapsulatedPacket(EncapsulatedPacket $packet){
+		if($packet->messageIndex === null){
+			$this->handleEncapsulatedPacketRoute($packet);
+		}else{
+			if($packet->messageIndex < $this->reliableWindowStart or $packet->messageIndex > $this->reliableWindowEnd){
+				return;
+			}
+
+			if(($packet->messageIndex - $this->lastReliableIndex) === 1){
+				$this->lastReliableIndex++;
+				$this->reliableWindowStart++;
+				$this->reliableWindowEnd++;
+				$this->handleEncapsulatedPacketRoute($packet);
+
+				if(count($this->reliableWindow) > 0){
+					ksort($this->reliableWindow);
+
+					foreach($this->reliableWindow as $index => $pk){
+						if(($index - $this->lastReliableIndex) !== 1){
+							break;
+						}
+						$this->lastReliableIndex++;
+						$this->reliableWindowStart++;
+						$this->reliableWindowEnd++;
+						$this->handleEncapsulatedPacketRoute($pk);
+						unset($this->reliableWindow[$index]);
+					}
+				}
+			}else{
+				$this->reliableWindow[$packet->messageIndex] = $packet;
+			}
+		}
+
+	}
+
 	public function close(){
 		$data = "\x60\x00\x08\x00\x00\x00\x00\x00\x00\x00\x15";
 		$this->addEncapsulatedToQueue(EncapsulatedPacket::fromBinary($data)); //CLIENT_DISCONNECT packet 0x15
 		$this->sessionManager = null;
+	}
+
+	/**
+	 * @param EncapsulatedPacket $packet
+	 * @param int                $flags
+	 */
+	public function addEncapsulatedToQueue(EncapsulatedPacket $packet, $flags = RakLib::PRIORITY_NORMAL){
+
+		if(($packet->needACK = ($flags & RakLib::FLAG_NEED_ACK) > 0) === true){
+			$this->needACK[$packet->identifierACK] = [];
+		}
+
+		if(
+			$packet->reliability === PacketReliability::RELIABLE or
+			$packet->reliability === PacketReliability::RELIABLE_ORDERED or
+			$packet->reliability === PacketReliability::RELIABLE_SEQUENCED or
+			$packet->reliability === PacketReliability::RELIABLE_WITH_ACK_RECEIPT or
+			$packet->reliability === PacketReliability::RELIABLE_ORDERED_WITH_ACK_RECEIPT
+		){
+			$packet->messageIndex = $this->messageIndex++;
+
+			if($packet->reliability === PacketReliability::RELIABLE_ORDERED){
+				$packet->orderIndex = $this->channelIndex[$packet->orderChannel]++;
+			}
+		}
+
+		if($packet->getTotalLength() + 4 > $this->mtuSize){
+			$buffers = str_split($packet->buffer, $this->mtuSize - 34);
+			$splitID = ++$this->splitID % 65536;
+			foreach($buffers as $count => $buffer){
+				$pk = new EncapsulatedPacket();
+				$pk->splitID = $splitID;
+				$pk->hasSplit = true;
+				$pk->splitCount = count($buffers);
+				$pk->reliability = $packet->reliability;
+				$pk->splitIndex = $count;
+				$pk->buffer = $buffer;
+				if($count > 0){
+					$pk->messageIndex = $this->messageIndex++;
+				}else{
+					$pk->messageIndex = $packet->messageIndex;
+				}
+				if($pk->reliability === PacketReliability::RELIABLE_ORDERED){
+					$pk->orderChannel = $packet->orderChannel;
+					$pk->orderIndex = $packet->orderIndex;
+				}
+				$this->addToQueue($pk, $flags | RakLib::PRIORITY_IMMEDIATE);
+			}
+		}else{
+			$this->addToQueue($packet, $flags);
+		}
+	}
+
+	private function handleSplit(EncapsulatedPacket $packet){
+		if($packet->splitCount >= self::MAX_SPLIT_SIZE or $packet->splitIndex >= self::MAX_SPLIT_SIZE or $packet->splitIndex < 0){
+			return;
+		}
+
+
+		if(!isset($this->splitPackets[$packet->splitID])){
+			if(count($this->splitPackets) >= self::MAX_SPLIT_COUNT){
+				return;
+			}
+			$this->splitPackets[$packet->splitID] = [$packet->splitIndex => $packet];
+		}else{
+			$this->splitPackets[$packet->splitID][$packet->splitIndex] = $packet;
+		}
+
+		if(count($this->splitPackets[$packet->splitID]) === $packet->splitCount){
+			$pk = new EncapsulatedPacket();
+			$pk->buffer = "";
+			for($i = 0; $i < $packet->splitCount; ++$i){
+				$pk->buffer .= $this->splitPackets[$packet->splitID][$i]->buffer;
+			}
+
+			$pk->length = strlen($pk->buffer);
+			unset($this->splitPackets[$packet->splitID]);
+
+			$this->handleEncapsulatedPacketRoute($pk);
+		}
+	}
+
+	private function handleEncapsulatedPacketRoute(EncapsulatedPacket $packet){
+		if($this->sessionManager === null){
+			return;
+		}
+
+		if($packet->hasSplit){
+			if($this->state === self::STATE_CONNECTED){
+				$this->handleSplit($packet);
+			}
+
+			return;
+		}
+
+		$id = ord($packet->buffer{0});
+		if($id < 0x80){ //internal data packet
+			if($this->state === self::STATE_CONNECTING_2){
+				if($id === CLIENT_CONNECT_DataPacket::$ID){
+					$dataPacket = new CLIENT_CONNECT_DataPacket;
+					$dataPacket->buffer = $packet->buffer;
+					$dataPacket->decode();
+					$pk = new SERVER_HANDSHAKE_DataPacket;
+					$pk->address = $this->address;
+					$pk->port = $this->port;
+					$pk->sendPing = $dataPacket->sendPing;
+					$pk->sendPong = bcadd($pk->sendPing, "1000");
+					$pk->encode();
+
+					$sendPacket = new EncapsulatedPacket();
+					$sendPacket->reliability = PacketReliability::UNRELIABLE;
+					$sendPacket->buffer = $pk->buffer;
+					$this->addToQueue($sendPacket, RakLib::PRIORITY_IMMEDIATE);
+				}elseif($id === CLIENT_HANDSHAKE_DataPacket::$ID){
+					$dataPacket = new CLIENT_HANDSHAKE_DataPacket;
+					$dataPacket->buffer = $packet->buffer;
+					$dataPacket->decode();
+
+					if($dataPacket->port === $this->sessionManager->getPort() or !$this->sessionManager->portChecking){
+						$this->state = self::STATE_CONNECTED; //FINALLY!
+						$this->isTemporal = false;
+						$this->sessionManager->openSession($this);
+					}
+				}
+			}elseif($id === CLIENT_DISCONNECT_DataPacket::$ID){
+				$this->disconnect("client disconnect");
+			}elseif($id === PING_DataPacket::$ID){
+				$dataPacket = new PING_DataPacket;
+				$dataPacket->buffer = $packet->buffer;
+				$dataPacket->decode();
+
+				$pk = new PONG_DataPacket;
+				$pk->pingID = $dataPacket->pingID;
+				$pk->encode();
+
+				$sendPacket = new EncapsulatedPacket();
+				$sendPacket->reliability = PacketReliability::UNRELIABLE;
+				$sendPacket->buffer = $pk->buffer;
+				$this->addToQueue($sendPacket);
+			}//TODO: add PING/PONG (0x00/0x03) automatic latency measure
+		}elseif($this->state === self::STATE_CONNECTED){
+			$this->sessionManager->streamEncapsulated($this, $packet);
+
+			//TODO: stream channels
+		}else{
+			//$this->sessionManager->getLogger()->notice("Received packet before connection: " . bin2hex($packet->buffer));
+		}
+	}
+
+	/**
+	 * @param EncapsulatedPacket $pk
+	 * @param int                $flags
+	 */
+	private function addToQueue(EncapsulatedPacket $pk, $flags = RakLib::PRIORITY_NORMAL){
+		$priority = $flags & 0b00000111;
+		if($pk->needACK and $pk->messageIndex !== null){
+			$this->needACK[$pk->identifierACK][$pk->messageIndex] = $pk->messageIndex;
+		}
+		if($priority === RakLib::PRIORITY_IMMEDIATE){ //Skip queues
+			$packet = new DATA_PACKET_0();
+			$packet->seqNumber = $this->sendSeqNumber++;
+			if($pk->needACK){
+				$packet->packets[] = clone $pk;
+				$pk->needACK = false;
+			}else{
+				$packet->packets[] = $pk->toBinary();
+			}
+
+			$this->sendPacket($packet);
+			$packet->sendTime = microtime(true);
+			$this->recoveryQueue[$packet->seqNumber] = $packet;
+
+			return;
+		}
+		$length = $this->sendQueue->length();
+		if($length + $pk->getTotalLength() > $this->mtuSize){
+			$this->sendQueue();
+		}
+
+		if($pk->needACK){
+			$this->sendQueue->packets[] = clone $pk;
+			$pk->needACK = false;
+		}else{
+			$this->sendQueue->packets[] = $pk->toBinary();
+		}
 	}
 }

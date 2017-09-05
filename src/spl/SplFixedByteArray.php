@@ -15,29 +15,13 @@
  * GNU General Public License for more details.
 */
 
-class SplFixedByteArray extends SplFixedArray{
+class SplFixedByteArray extends SplFixedArray {
 
 	private $convert;
 
 	public function __construct($size, $convert = false){
 		parent::__construct($size);
 		$this->convert = (bool) $convert;
-	}
-
-	public function chunk($start, $size, $normalize = true){
-		$end = $start + $size;
-		if($normalize and $this->convert){
-			$d = "";
-			for($i = $start; $i < $end; ++$i){
-				$d .= chr($this[$i]);
-			}
-		}else{
-			$d = [];
-			for($i = $start; $i < $end; ++$i){
-				$d[] = $this[$i];
-			}
-		}
-		return $d;
 	}
 
 	/**
@@ -87,6 +71,27 @@ class SplFixedByteArray extends SplFixedArray{
 		return $ob;
 	}
 
+	public function chunk($start, $size, $normalize = true){
+		$end = $start + $size;
+		if($normalize and $this->convert){
+			$d = "";
+			for($i = $start; $i < $end; ++$i){
+				$d .= chr($this[$i]);
+			}
+		}else{
+			$d = [];
+			for($i = $start; $i < $end; ++$i){
+				$d[] = $this[$i];
+			}
+		}
+
+		return $d;
+	}
+
+	public function __toString(){
+		return $this->toString();
+	}
+
 	public function toString(){
 		$result = "";
 		if($this->convert){
@@ -98,10 +103,7 @@ class SplFixedByteArray extends SplFixedArray{
 				$result .= $this[$i];
 			}
 		}
-		return $result;
-	}
 
-	public function __toString(){
-		return $this->toString();
+		return $result;
 	}
 }

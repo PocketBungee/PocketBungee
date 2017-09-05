@@ -16,15 +16,13 @@
 namespace raklib\server;
 
 
-class RakLibServer extends \Thread{
+class RakLibServer extends \Thread {
+	public $loadPaths;
 	protected $port;
 	protected $interface;
 	/** @var \ThreadedLogger */
 	protected $logger;
 	protected $loader;
-
-	public $loadPaths;
-
 	protected $shutdown;
 
 	/** @var \Threaded */
@@ -106,17 +104,11 @@ class RakLibServer extends \Thread{
 
 	/**
 	 * Returns the RakNet server ID
+	 *
 	 * @return int
 	 */
 	public function getServerId() : int{
 		return $this->serverId;
-	}
-
-	/**
-	 * @return \ThreadedLogger
-	 */
-	public function getLogger(){
-		return $this->logger;
 	}
 
 	/**
@@ -155,6 +147,13 @@ class RakLibServer extends \Thread{
 		}
 	}
 
+	/**
+	 * @return \ThreadedLogger
+	 */
+	public function getLogger(){
+		return $this->logger;
+	}
+
 	public function errorHandler($errno, $errstr, $errfile, $errline, $context, $trace = null){
 		if(error_reporting() === 0){
 			return false;
@@ -191,6 +190,10 @@ class RakLibServer extends \Thread{
 		return true;
 	}
 
+	public function cleanPath($path){
+		return str_replace(["\\", ".php", "phar://", str_replace(["\\", "phar://"], ["/", ""], $this->mainPath)], ["/", "", "", ""], $path);
+	}
+
 	public function getTrace($start = 0, $trace = null){
 		if($trace === null){
 			if(function_exists("xdebug_get_function_stack")){
@@ -219,10 +222,6 @@ class RakLibServer extends \Thread{
 		}
 
 		return $messages;
-	}
-
-	public function cleanPath($path){
-		return str_replace(["\\", ".php", "phar://", str_replace(["\\", "phar://"], ["/", ""], $this->mainPath)], ["/", "", "", ""], $path);
 	}
 
 	public function run(){

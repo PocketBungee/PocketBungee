@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
 */
 
-class BaseClassLoader extends \Threaded implements ClassLoader{
+class BaseClassLoader extends \Threaded implements ClassLoader {
 
 	/** @var \ClassLoader */
 	private $parent;
@@ -60,12 +60,13 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 			$this->lookup[] = $path;
 		}
 	}
-	
+
 	protected function getAndRemoveLookupEntries(){
 		$entries = [];
 		while($this->count() > 0){
 			$entries[] = $this->shift();
 		}
+
 		return $entries;
 	}
 
@@ -92,6 +93,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 		foreach($this->classes as $class){
 			$classes[] = $class;
 		}
+
 		return $classes;
 	}
 
@@ -133,7 +135,7 @@ class BaseClassLoader extends \Threaded implements ClassLoader{
 			if(method_exists($name, "onClassLoaded") and (new ReflectionClass($name))->getMethod("onClassLoaded")->isStatic()){
 				$name::onClassLoaded();
 			}
-			
+
 			$this->classes[] = $name;
 
 			return true;

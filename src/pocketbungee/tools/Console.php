@@ -1,24 +1,20 @@
 <?php
+declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
-
 use pocketbungee\Bungee;
-use pocketbungee\commands\Commands;
 use pocketbungee\network\Version;
 
-/**
- * Class Console
- * @package pocketbungee\tools
- */
 class Console {
 
-	public $bungee;
 	public $pre;
-	public $load;
+	private $bungee;
+	private $load;
 
 	/**
 	 * Console constructor.
+	 *
 	 * @param Bungee $bungee
 	 */
 	public function __construct(Bungee $bungee){
@@ -27,30 +23,28 @@ class Console {
 	}
 
 	public function showConsole(){
-
 		$this->load = microtime(true);
 
-		if(!file_exists($this->bungee->getDataFolder()."config.json")){
-
-			$this->bungee->getLogger()->info("Setting up ".TextFormat::AQUA."PocketBungee ".TextFormat::YELLOW." for the first time..");
+		if(!file_exists($this->bungee->getDataFolder() . "config.json")){
+			$this->bungee->getLogger()->info("Setting up " . TextFormat::AQUA . "PocketBungee" . TextFormat::YELLOW . " for the first time..");
 			$this->firstUse();
 		}else{
 			$this->ready();
 		}
+
+		$this->bungee->hasStarted = true;
 	}
 
 	public function firstUse(){
-
 		file_put_contents(\pocketbungee\PATH . "config.json", json_encode(json_decode($this->bungee->getResource("config.json"), true), JSON_PRETTY_PRINT));
 		$this->bungee->getLogger()->info("All done!");
 		$this->ready();
 	}
 
 	public function ready(){
-
 		$date = date("D, F d, Y, H:i T");
 		$file = file_get_contents(\pocketbungee\PATH . "config.json");
-		$deject = json_decode($file, JSON_PRETTY_PRINT);
+		$deject = json_decode($file, true);
 		$servers = count($deject['Servers']);
 		$version = [];
 		$version['VERSION'] = Version::VERSION;;
@@ -68,7 +62,7 @@ class Console {
 §6│§e  | |  | (_) | (__|   <  __/ |_| |_) | |_| | | | | (_| |  __/  __/       Code Name: §b{$version['CODENAME']}
 §6│§e  |_|   \___/ \___|_|\_\___|\__|____/ \__,_|_| |_|\__, |\___|\___|       Date: §b{$date}
 §6│§e		                                      __/ |  │            GitHub: §bhttps://github.com/PocketBungee/PocketBungee
-§6│§e		                                      |_____/             Loaded in: §b{$load} 's seconds!
+§6│§e		                                      |_____/             Loaded in: §b{$load}'s seconds!
 §6│§e
 §6└─────────────────────────────────────────────────────────────────────────┘");
 

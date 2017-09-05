@@ -4,5 +4,5 @@
   "servers",
   "reload",
   "ping",
-  "exit"
+  "stop"
 ]

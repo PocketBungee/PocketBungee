@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
 */
 
-abstract class ThreadedLoggerAttachment extends \Threaded implements \LoggerAttachment{
+abstract class ThreadedLoggerAttachment extends \Threaded implements \LoggerAttachment {
 
 	/** @var \ThreadedLoggerAttachment */
 	protected $attachment = null;
@@ -34,17 +34,6 @@ abstract class ThreadedLoggerAttachment extends \Threaded implements \LoggerAtta
 	/**
 	 * @param ThreadedLoggerAttachment $attachment
 	 */
-	public function addAttachment(\ThreadedLoggerAttachment $attachment){
-		if($this->attachment instanceof \ThreadedLoggerAttachment){
-			$this->attachment->addAttachment($attachment);
-		}else{
-			$this->attachment = $attachment;
-		}
-	}
-
-	/**
-	 * @param ThreadedLoggerAttachment $attachment
-	 */
 	public function removeAttachment(\ThreadedLoggerAttachment $attachment){
 		if($this->attachment instanceof \ThreadedLoggerAttachment){
 			if($this->attachment === $attachment){
@@ -53,13 +42,6 @@ abstract class ThreadedLoggerAttachment extends \Threaded implements \LoggerAtta
 					$this->addAttachment($attachment);
 				}
 			}
-		}
-	}
-
-	public function removeAttachments(){
-		if($this->attachment instanceof \ThreadedLoggerAttachment){
-			$this->attachment->removeAttachments();
-			$this->attachment = null;
 		}
 	}
 
@@ -74,5 +56,23 @@ abstract class ThreadedLoggerAttachment extends \Threaded implements \LoggerAtta
 		}
 
 		return $attachments;
+	}
+
+	/**
+	 * @param ThreadedLoggerAttachment $attachment
+	 */
+	public function addAttachment(\ThreadedLoggerAttachment $attachment){
+		if($this->attachment instanceof \ThreadedLoggerAttachment){
+			$this->attachment->addAttachment($attachment);
+		}else{
+			$this->attachment = $attachment;
+		}
+	}
+
+	public function removeAttachments(){
+		if($this->attachment instanceof \ThreadedLoggerAttachment){
+			$this->attachment->removeAttachments();
+			$this->attachment = null;
+		}
 	}
 }

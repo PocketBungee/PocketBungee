@@ -1,24 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace pocketbungee\tools;
 
-
-/**
- * Class TextFormat
- * @package pocketbungee\tools
- */
 class TextFormat {
 
 	const ESCAPE = "\xc2\xa7";
 
-	const INFO = "[".\LogLevel::INFO."]";
-	const ALERT = "[".\LogLevel::ALERT."]";
-	const ERROR = "[".\LogLevel::ERROR."]";
-	const CRITICAL = "[".\LogLevel::CRITICAL."]";
-	const DEBUG = "[".\LogLevel::DEBUG."]";
-	const EMERGENCY = "[".\LogLevel::EMERGENCY."]";
-	const NOTICE = "[".\LogLevel::NOTICE."]";
-	const WARNING = "[".\LogLevel::WARNING."]";
+	const INFO = "[" . \LogLevel::INFO . "]";
+	const ALERT = "[" . \LogLevel::ALERT . "]";
+	const ERROR = "[" . \LogLevel::ERROR . "]";
+	const CRITICAL = "[" . \LogLevel::CRITICAL . "]";
+	const DEBUG = "[" . \LogLevel::DEBUG . "]";
+	const EMERGENCY = "[" . \LogLevel::EMERGENCY . "]";
+	const NOTICE = "[" . \LogLevel::NOTICE . "]";
+	const WARNING = "[" . \LogLevel::WARNING . "]";
+
 	const BLACK = TextFormat::ESCAPE . "0";
 	const DARK_BLUE = TextFormat::ESCAPE . "1";
 	const DARK_GREEN = TextFormat::ESCAPE . "2";
@@ -45,7 +42,6 @@ class TextFormat {
 	/*
 	 * Terminal related
 	 */
-
 	public static $FORMAT_BOLD = "";
 	public static $FORMAT_OBFUSCATED = "";
 	public static $FORMAT_ITALIC = "";
@@ -72,32 +68,10 @@ class TextFormat {
 
 	/**
 	 * @param string $string
-	 * @return array
-	 */
-	public static function tokenize(string $string) : array{
-		return preg_split("/(" . TextFormat::ESCAPE . "[0123456789abcdefklmnor])/", $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-	}
-
-	/**
-	 * @return bool|null
-	 */
-	public static function hasFormattingCodes(){
-		if(self::$formattingCodes === null){
-			$opts = getopt("", ["enable-ansi", "disable-ansi"]);
-			if(isset($opts["disable-ansi"])){
-				self::$formattingCodes = false;
-			}else{
-				self::$formattingCodes = ((Utils::getOS() !== "win" and getenv("TERM") != "" and (!function_exists("posix_ttyname") or !defined("STDOUT") or posix_ttyname(STDOUT) !== false)) or isset($opts["enable-ansi"]));
-			}
-		}
-		return self::$formattingCodes;
-	}
-
-	/**
-	 * @param $string
+	 *
 	 * @return string
 	 */
-	public static function toANSI($string) : string{
+	public static function toANSI(string $string) : string{
 		if(!is_array($string)){
 			$string = self::tokenize($string);
 		}
@@ -176,33 +150,55 @@ class TextFormat {
 					break;
 			}
 		}
+
 		return $newString;
 	}
 
-	protected static function getFallbackEscapeCodes(){
-		self::$FORMAT_BOLD = "\x1b[1m";
-		self::$FORMAT_OBFUSCATED = "";
-		self::$FORMAT_ITALIC = "\x1b[3m";
-		self::$FORMAT_UNDERLINE = "\x1b[4m";
-		self::$FORMAT_STRIKETHROUGH = "\x1b[9m";
-		self::$FORMAT_RESET = "\x1b[m";
-		self::$COLOR_BLACK = "\x1b[38;5;16m";
-		self::$COLOR_DARK_BLUE = "\x1b[38;5;19m";
-		self::$COLOR_DARK_GREEN = "\x1b[38;5;34m";
-		self::$COLOR_DARK_AQUA = "\x1b[38;5;37m";
-		self::$COLOR_DARK_RED = "\x1b[38;5;124m";
-		self::$COLOR_PURPLE = "\x1b[38;5;127m";
-		self::$COLOR_GOLD = "\x1b[38;5;214m";
-		self::$COLOR_GRAY = "\x1b[38;5;145m";
-		self::$COLOR_DARK_GRAY = "\x1b[38;5;59m";
-		self::$COLOR_BLUE = "\x1b[38;5;63m";
-		self::$COLOR_GREEN = "\x1b[38;5;83m";
-		self::$COLOR_AQUA = "\x1b[38;5;87m";
-		self::$COLOR_RED = "\x1b[38;5;203m";
-		self::$COLOR_LIGHT_PURPLE = "\x1b[38;5;207m";
-		self::$COLOR_YELLOW = "\x1b[38;5;227m";
-		self::$COLOR_WHITE = "\x1b[38;5;231m";
+	/**
+	 * @param string $string
+	 *
+	 * @return array
+	 */
+	public static function tokenize(string $string) : array{
+		return preg_split("/(" . TextFormat::ESCAPE . "[0123456789abcdefklmnor])/", $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 	}
+
+	public static function init(){
+		if(!self::hasFormattingCodes()){
+			return;
+		}
+		switch(Utils::getOS()){
+			case "linux":
+			case "mac":
+			case "bsd":
+				self::getEscapeCodes();
+
+				return;
+			case "win":
+			case "android":
+				self::getFallbackEscapeCodes();
+
+				return;
+		}
+		//TODO: iOS
+	}
+
+	/**
+	 * @return bool|null
+	 */
+	public static function hasFormattingCodes(){
+		if(self::$formattingCodes === null){
+			$opts = getopt("", ["enable-ansi", "disable-ansi"]);
+			if(isset($opts["disable-ansi"])){
+				self::$formattingCodes = false;
+			}else{
+				self::$formattingCodes = ((Utils::getOS() !== "win" and getenv("TERM") != "" and (!function_exists("posix_ttyname") or !defined("STDOUT") or posix_ttyname(STDOUT) !== false)) or isset($opts["enable-ansi"]));
+			}
+		}
+
+		return self::$formattingCodes;
+	}
+
 	protected static function getEscapeCodes(){
 		self::$FORMAT_BOLD = `tput bold`;
 		self::$FORMAT_OBFUSCATED = `tput smacs`;
@@ -240,21 +236,28 @@ class TextFormat {
 		}
 	}
 
-	public static function init(){
-		if(!self::hasFormattingCodes()){
-			return;
-		}
-		switch(Utils::getOS()){
-			case "linux":
-			case "mac":
-			case "bsd":
-				self::getEscapeCodes();
-				return;
-			case "win":
-			case "android":
-				self::getFallbackEscapeCodes();
-				return;
-		}
-		//TODO: iOS
+	protected static function getFallbackEscapeCodes(){
+		self::$FORMAT_BOLD = "\x1b[1m";
+		self::$FORMAT_OBFUSCATED = "";
+		self::$FORMAT_ITALIC = "\x1b[3m";
+		self::$FORMAT_UNDERLINE = "\x1b[4m";
+		self::$FORMAT_STRIKETHROUGH = "\x1b[9m";
+		self::$FORMAT_RESET = "\x1b[m";
+		self::$COLOR_BLACK = "\x1b[38;5;16m";
+		self::$COLOR_DARK_BLUE = "\x1b[38;5;19m";
+		self::$COLOR_DARK_GREEN = "\x1b[38;5;34m";
+		self::$COLOR_DARK_AQUA = "\x1b[38;5;37m";
+		self::$COLOR_DARK_RED = "\x1b[38;5;124m";
+		self::$COLOR_PURPLE = "\x1b[38;5;127m";
+		self::$COLOR_GOLD = "\x1b[38;5;214m";
+		self::$COLOR_GRAY = "\x1b[38;5;145m";
+		self::$COLOR_DARK_GRAY = "\x1b[38;5;59m";
+		self::$COLOR_BLUE = "\x1b[38;5;63m";
+		self::$COLOR_GREEN = "\x1b[38;5;83m";
+		self::$COLOR_AQUA = "\x1b[38;5;87m";
+		self::$COLOR_RED = "\x1b[38;5;203m";
+		self::$COLOR_LIGHT_PURPLE = "\x1b[38;5;207m";
+		self::$COLOR_YELLOW = "\x1b[38;5;227m";
+		self::$COLOR_WHITE = "\x1b[38;5;231m";
 	}
 }

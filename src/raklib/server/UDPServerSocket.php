@@ -21,7 +21,7 @@
 
 namespace raklib\server;
 
-class UDPServerSocket{
+class UDPServerSocket {
 	/** @var \Logger */
 	protected $logger;
 	protected $socket;
@@ -38,6 +38,28 @@ class UDPServerSocket{
 			exit(1);
 		}
 		socket_set_nonblock($this->socket);
+	}
+
+	/**
+	 * @param int $size
+	 *
+	 * @return $this
+	 */
+	public function setRecvBuffer($size){
+		@socket_set_option($this->socket, SOL_SOCKET, SO_RCVBUF, $size);
+
+		return $this;
+	}
+
+	/**
+	 * @param int $size
+	 *
+	 * @return $this
+	 */
+	public function setSendBuffer($size){
+		@socket_set_option($this->socket, SOL_SOCKET, SO_SNDBUF, $size);
+
+		return $this;
 	}
 
 	public function getSocket(){
@@ -68,28 +90,6 @@ class UDPServerSocket{
 	 */
 	public function writePacket($buffer, $dest, $port){
 		return socket_sendto($this->socket, $buffer, strlen($buffer), 0, $dest, $port);
-	}
-
-	/**
-	 * @param int $size
-	 *
-	 * @return $this
-	 */
-	public function setSendBuffer($size){
-		@socket_set_option($this->socket, SOL_SOCKET, SO_SNDBUF, $size);
-
-		return $this;
-	}
-
-	/**
-	 * @param int $size
-	 *
-	 * @return $this
-	 */
-	public function setRecvBuffer($size){
-		@socket_set_option($this->socket, SOL_SOCKET, SO_RCVBUF, $size);
-
-		return $this;
 	}
 
 }

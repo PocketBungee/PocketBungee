@@ -28,7 +28,7 @@ use raklib\Binary;
 
 #include <rules/RakLibPacket.h>
 
-class EncapsulatedPacket{
+class EncapsulatedPacket {
 
 	public $reliability;
 	public $hasSplit = false;
@@ -99,6 +99,10 @@ class EncapsulatedPacket{
 		return 3 + strlen($this->buffer) + ($this->messageIndex !== null ? 3 : 0) + ($this->orderIndex !== null ? 4 : 0) + ($this->hasSplit ? 10 : 0);
 	}
 
+	public function __toString(){
+		return $this->toBinary();
+	}
+
 	/**
 	 * @param bool $internal
 	 *
@@ -115,9 +119,5 @@ class EncapsulatedPacket{
 			) .
 			($this->hasSplit ? Binary::writeInt($this->splitCount) . Binary::writeShort($this->splitID) . Binary::writeInt($this->splitIndex) : "")
 			. $this->buffer;
-	}
-
-	public function __toString(){
-		return $this->toBinary();
 	}
 }

@@ -23,7 +23,7 @@ namespace raklib\protocol;
 
 #include <rules/RakLibPacket.h>
 
-abstract class DataPacket extends Packet{
+abstract class DataPacket extends Packet {
 
 	/** @var EncapsulatedPacket[] */
 	public $packets = [];
