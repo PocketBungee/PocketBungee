@@ -7,3 +7,5 @@ config.json
 PocketBungee.rar
 .flooignore
 .floo
+*.xml___jb_tmp___
+*.php___jb_tmp___

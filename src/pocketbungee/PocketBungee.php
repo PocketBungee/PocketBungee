@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace pocketbungee {
@@ -9,8 +10,8 @@ namespace pocketbungee {
 
 	function basicCheck(){
 
-		if(version_compare("7.0", PHP_VERSION) > 0 or version_compare("7.1", PHP_VERSION) <= 0){
-			echo "[CRITICAL] PocketBungee only supports PHP version 7.0";
+		if(version_compare("7.2", PHP_VERSION) > 0){
+			echo "[CRITICAL] PocketBungee only supports PHP version 7.2";
 			exit();
 		}
 
