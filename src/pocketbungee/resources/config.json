@@ -10,7 +10,7 @@
       "PORT": "19133",
       "isDefault": true
     },
-    "KITPVP": {
+    "KitPvP": {
       "IP": "localhost",
       "PORT": "19134",
       "isDefault": false

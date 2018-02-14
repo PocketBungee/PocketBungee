@@ -61,8 +61,8 @@ class Console {
 §6│§e  |  ___/ _ \ / __| |/ / _ \ __|  _ <| | | | '_ \ / _` |/ _ \/ _ \       Version: §b{$version['VERSION']}
 §6│§e  | |  | (_) | (__|   <  __/ |_| |_) | |_| | | | | (_| |  __/  __/       Code Name: §b{$version['CODENAME']}
 §6│§e  |_|   \___/ \___|_|\_\___|\__|____/ \__,_|_| |_|\__, |\___|\___|       Date: §b{$date}
-§6│§e		                                      __/ |  │            GitHub: §bhttps://github.com/PocketBungee/PocketBungee
-§6│§e		                                      |_____/             Loaded in: §b{$load}'s seconds!
+§6│§e		                                          ____| │                 GitHub: §bhttps://github.com/PocketBungee/PocketBungee
+§6│§e		                                         |_____/                  Loaded in: §b{$load}'s seconds!
 §6│§e
 §6└─────────────────────────────────────────────────────────────────────────┘");
 

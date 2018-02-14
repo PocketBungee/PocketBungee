@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace pocketbungee;
@@ -9,7 +10,6 @@ use pocketbungee\tools\TextFormat;
 
 class Bungee {
 
-	//TODO: Actually fix this.
 	public $hasStarted = false;
 	/** @var Bungee */
 	private static $instance;
@@ -41,7 +41,7 @@ class Bungee {
 		$this->int();
 	}
 
-	public function int(){
+	public function int() : void{
 		TextFormat::init();
 		$this->logger = new Logger();
 		$this->commandSystem = new Commands($this);
@@ -141,7 +141,7 @@ class Bungee {
 		return $this->defaultServer;
 	}
 
-	public function shutDown($force = false){
+	public function shutDown() : void{
 		$this->getLogger()->notice("Shutting down PocketBungee....");
 		exit;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace pocketbungee;
@@ -18,15 +19,15 @@ class BungeePlayer {
 	/** @var string */
 	public $username;
 
-	/**
-	 * BungeePlayer constructor.
-	 *
-	 * @param Bungee $bungee
-	 * @param string $server
-	 * @param int    $ip
-	 * @param int    $port
-	 * @param int    $username
-	 */
+    /**
+     * BungeePlayer constructor.
+     *
+     * @param Bungee $bungee
+     * @param string $server
+     * @param int $ip
+     * @param int $port
+     * @param string $username
+     */
 	public function __construct(Bungee $bungee, string $server = BungeePlayer::DEFAULT_SERVER, int $ip, int $port, string $username){
 		$this->bungee = $bungee;
 		$this->server = $server;
